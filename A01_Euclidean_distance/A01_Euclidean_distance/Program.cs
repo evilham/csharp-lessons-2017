@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace A01_Euclidean_distance
 {
@@ -17,13 +18,13 @@ namespace A01_Euclidean_distance
             while (true)
             {
                 Console.Write("x1: ");
-                x1 = Convert.ToDouble(Console.ReadLine());
+                x1 = readNumber();
                 Console.Write("y1: ");
-                y1 = Convert.ToDouble(Console.ReadLine());
+                y1 = readNumber();
                 Console.Write("x2: ");
-                x2 = Convert.ToDouble(Console.ReadLine());
+                x2 = readNumber();
                 Console.Write("y2: ");
-                y2 = Convert.ToDouble(Console.ReadLine());
+                y2 = readNumber();
 
                 double distanceInput = distanceTwoPoints(x1, y1, x2, y2);
                 Console.WriteLine(
@@ -31,6 +32,11 @@ namespace A01_Euclidean_distance
                 Console.WriteLine();
             }
        }
+        static double readNumber()
+        {
+            string line = Console.ReadLine().Replace(",", ".");
+            return Convert.ToDouble(line, CultureInfo.InvariantCulture);
+        }
         static double distanceTwoPoints(double x1, double y1, double x2, double y2)
         {
             double deltaX = (x2 - x1);
