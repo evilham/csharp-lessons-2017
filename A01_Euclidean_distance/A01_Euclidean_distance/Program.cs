@@ -39,7 +39,7 @@ namespace A01_Euclidean_distance
             }; // Area 7.5, Perimeter: 13.4403
 
             // 1. test
-            testPolygon(new Polygon(square_3x3), 9.0, 12.1);
+            testPolygon(new Polygon(square_3x3), 9.0, 12.0);
             testPolygon(new Polygon(triangle_b2_h1), 1.0, 4.8284);
             testPolygon(new Polygon(triangle_b3_h5), 7.5, 13.4403);
 
