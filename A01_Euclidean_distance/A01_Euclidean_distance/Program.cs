@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Globalization;
 
 namespace A01_Euclidean_distance
 {
     class Program
     {
-        static double readNumber()
-        {
-            string line = Console.ReadLine().Replace(",", ".");
-            return Convert.ToDouble(line, CultureInfo.InvariantCulture);
-        }
+
         static void Main(string[] args)
         {
+
+
+            List <double> l = new List<double>();
+            List <Point> p = new List<Point>();
+            l.Add(1.0);
+            p.Add(new Point());
             // Beispiel Polygone, für die wir Ergebniss kennen.
             Point[] square_3x3 =
             {
@@ -38,80 +39,51 @@ namespace A01_Euclidean_distance
             }; // Area 7.5, Perimeter: 13.4403
 
             // 1. test
-            calcPolygon(square_3x3);
-            calcPolygon(triangle_b2_h1);
-            calcPolygon(triangle_b3_h5);
+            testPolygon(new Polygon(square_3x3), 9.0, 12.1);
+            testPolygon(new Polygon(triangle_b2_h1), 1.0, 4.8284);
+            testPolygon(new Polygon(triangle_b3_h5), 7.5, 13.4403);
 
             // 2. Interactive mode
             string[] affirmative = new string[] { "YES", "Y", "JA", "J" };
             do
             {
-                calcPolygon(readPolygon());
+                calcPolygon(Polygon.readPolygon());
                 Console.Write("\nRead another polygon? (y/[n]) ");
             } while (affirmative.Contains(Console.ReadLine().ToUpperInvariant()));
             Console.Write("\nBye bye! ");
             Console.ReadLine();
         }
-        public static Point[] readPolygon()
-        {
-            // Um anzufangen brauchen wir die Anzahl an Vertex/Punkte:
-            Console.Write("How many vertices does your polygon have? ");
-            int n = Convert.ToInt32(Console.ReadLine());
-            // Jetzt brauchen wir die tatsächliche Punkte
-            Point[] P_v = new Point[n];
-            for (int i = 0; i < n; ++i)
-            {
-                // 1. Koordinaten einlesen
-                double x, y;
-                Console.Write("X{0}: ", i + 1); // i+1 ist nur für Anzeige
-                x = readNumber();
 
-                Console.Write("Y{0}: ", i + 1); // i+1 ist nur für Anzeige
-                y = readNumber();
-                // 2. Punkt Objekt mit den richtigen Koordinaten erzeugen 
-                P_v[i] = new Point(x, y);
+        private static void testPolygon(Polygon polygon, double area, double perimeter,
+                                        double accuracy = 0.01)
+        {
+            double got_perimeter = polygon.calculatePerimeter();
+            double got_area = polygon.calculateArea();
+
+            if (Math.Abs(perimeter - got_perimeter) >= accuracy)
+            {
+                Console.WriteLine("ERROR: Perimeter function not working correctly (got {0} expected {1})",
+                    got_perimeter, perimeter);
             }
-            return P_v;
+            if (Math.Abs(area - got_area) >= accuracy)
+            {
+                Console.WriteLine("ERROR: Areas function not working correctly (got {0} expected {1})",
+                    got_area, area);
+            }
         }
-        public static void calcPolygon(Point[] P_v)
+
+        public static void calcPolygon(Polygon poly)
         {
-            int n = P_v.Length;
-
-            double d_total = 0.0;
-
-            for (int i = 0; i < n; ++i)
-            {
-                // j = i + 1 --> soll 0 sein, wenn i = n-1
-                int j = (i + 1) % n;
-                // 1. Variante:
-                //    Wir denken nur an die Koordinaten
-                /*
-                double d_i = Point.distanceTwoPoints(P_v[i].X, P_v[i].Y,
-                                                     P_v[j].X, P_v[j].Y);
-                */
-                // 2. Variante:
-                //    Wir denken an "Point" Objekte:
-                // double d_i = Point.distanceTwoPoints(P_v[i], P_v[j]);
-                //
-                // 3. Variante:
-                //    Wir agieren direkt zwischen 2 Point Objekten
-                double d_i = P_v[i].distanceTo(P_v[j]);
-                d_total += d_i;
-            }
-
-            Console.WriteLine("Perimeter: {0}", d_total);
-
-            // Berechnung nach:
-            // https://de.wikipedia.org/wiki/Polygon#Fl.C3.A4che
-            double area = 0.0;
-            for (int i = 0; i < n; ++i)
-            {
-                // j = i + 1 --> soll 0 sein, wenn i = n-1
-                int j = (i + 1) % n;
-                area += Math.Abs(P_v[i].X * P_v[j].Y - P_v[i].Y * P_v[j].X);
-            }
-            area /= 2.0;
-
+            double perimeter = poly.calculatePerimeter();
+            Console.WriteLine("Perimter: {0}", perimeter);
+            double area = poly.calculateArea();
+            Console.WriteLine("Area: {0}", area);
+        }
+        public static void calcPolygon(Point[] points)
+        {
+            double perimeter = Polygon.calculatePerimeter(points);
+            Console.WriteLine("Perimter: {0}", perimeter);
+            double area = Polygon.calculateArea(points);
             Console.WriteLine("Area: {0}", area);
         }
     }
