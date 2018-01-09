@@ -47,7 +47,14 @@ namespace A01_Euclidean_distance
             string[] affirmative = new string[] { "YES", "Y", "JA", "J" };
             do
             {
-                calcPolygon(Polygon.readPolygon());
+                try
+                {
+                    calcPolygon(Polygon.readPolygon());
+                }
+                catch (FormatException e)
+                {
+                    Console.WriteLine("There was an error reading your polygon.");
+                }
                 Console.Write("\nRead another polygon? (y/[n]) ");
             } while (affirmative.Contains(Console.ReadLine().ToUpperInvariant()));
             Console.Write("\nBye bye! ");
@@ -81,10 +88,8 @@ namespace A01_Euclidean_distance
         }
         public static void calcPolygon(Point[] points)
         {
-            double perimeter = Polygon.calculatePerimeter(points);
-            Console.WriteLine("Perimter: {0}", perimeter);
-            double area = Polygon.calculateArea(points);
-            Console.WriteLine("Area: {0}", area);
+            Polygon poly = new Polygon(points);
+            calcPolygon(poly);
         }
     }
 }

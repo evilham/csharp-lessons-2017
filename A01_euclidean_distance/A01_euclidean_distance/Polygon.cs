@@ -11,35 +11,92 @@ namespace A01_Euclidean_distance
     {
         public List<Point> points = new List<Point>();
 
+        /// <summary>
+        /// Empty constructor, starts with an empty points list.
+        /// </summary>
         public Polygon() { }
+        /// <summary>
+        /// Constructor that loads a point array into the points list.
+        /// </summary>
+        /// <param name="points">The points that define the polygon.</param>
         public Polygon(Point[] points)
         {
             this.points.AddRange(points);
+            
+            /*
+            foreach (Point po in points)
+            {
+                this.points.Add(po);
+            }
+            */
         }
 
-        static double readNumber()
+        static double readNumber(string line = null)
         {
-            string line = Console.ReadLine().Replace(",", ".");
+            if (line == null)
+                line = Console.ReadLine();
+
+            line = line.Replace(",", ".");
             return Convert.ToDouble(line, CultureInfo.InvariantCulture);
+        }
+        /// <summary>
+        /// Read a 2 dimensional point from the Console.
+        /// If X coordinate is empty or whitespace, a null Point is returned.
+        /// IF a wrong number is passed, the user is asked to try again.
+        /// </summary>
+        /// <param name="suffix">Suffix for X/Y Coordinate prompt.</param>
+        /// <returns>Point instance if everything went well, null if empty or
+        /// whitespace was passed to X coordinate.</returns>
+        static Point readPoint(string suffix = "")
+        {
+            // 1. Koordinaten einlesen
+            double x = 0.0, y = 0.0;
+            bool x_read = false, y_read = false;
+            while (!x_read)
+            {
+                try
+                {
+                    Console.Write("X{0} (empty to finish reading polygon): ", suffix);
+                    string x_line = Console.ReadLine();
+                    // If empty or whitespace was given, return a null Point
+                    if (string.IsNullOrWhiteSpace(x_line))
+                        return null;
+                    x = readNumber(x_line);
+                    x_read = true;
+                }
+                catch (FormatException e)
+                {
+                    throw e;
+                }
+            }
+
+            while (!y_read)
+            {
+                try
+                {
+                    Console.Write("Y{0}: ", suffix);
+                    y = readNumber();
+                    y_read = true;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("WARNING: Could not read Y coordinate, try again.");
+                }
+            };
+            // 2. Punkt Objekt mit den richtigen Koordinaten erzeugen 
+            return new Point(x, y);
         }
         public static Polygon readPolygon()
         {
-            // Um anzufangen brauchen wir die Anzahl an Vertex/Punkte:
-            Console.Write("How many vertices does your polygon have? ");
-            int n = Convert.ToInt32(Console.ReadLine());
             // Jetzt brauchen wir die tatsächliche Punkte
             Polygon poly = new Polygon();
-            for (int i = 0; i < n; ++i)
+            for (int i = 0; ; ++i)
             {
-                // 1. Koordinaten einlesen
-                double x, y;
-                Console.Write("X{0}: ", i + 1); // i+1 ist nur für Anzeige
-                x = readNumber();
-
-                Console.Write("Y{0}: ", i + 1); // i+1 ist nur für Anzeige
-                y = readNumber();
-                // 2. Punkt Objekt mit den richtigen Koordinaten erzeugen 
-                poly.points.Add(new Point(x, y));
+                Point po = readPoint((i + 1).ToString());
+                if (po == null)
+                    break;
+                //Point po = readPoint();
+                poly.points.Add(po);
             }
             return poly;
         }
