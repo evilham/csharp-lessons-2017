@@ -4,13 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.Collections;
 
 namespace A01_Euclidean_distance
 {
-    class Polygon
+    class Polygon : IEnumerable
     {
         public List<Point> points = new List<Point>();
 
+        public virtual string Name()
+        {
+            return "GenericPolygon";
+        }
+
+        #region "Constructors"
         /// <summary>
         /// Empty constructor, starts with an empty points list.
         /// </summary>
@@ -30,76 +37,8 @@ namespace A01_Euclidean_distance
             }
             */
         }
-
-        static double readNumber(string line = null)
-        {
-            if (line == null)
-                line = Console.ReadLine();
-
-            line = line.Replace(",", ".");
-            return Convert.ToDouble(line, CultureInfo.InvariantCulture);
-        }
-        /// <summary>
-        /// Read a 2 dimensional point from the Console.
-        /// If X coordinate is empty or whitespace, a null Point is returned.
-        /// IF a wrong number is passed, the user is asked to try again.
-        /// </summary>
-        /// <param name="suffix">Suffix for X/Y Coordinate prompt.</param>
-        /// <returns>Point instance if everything went well, null if empty or
-        /// whitespace was passed to X coordinate.</returns>
-        static Point readPoint(string suffix = "")
-        {
-            // 1. Koordinaten einlesen
-            double x = 0.0, y = 0.0;
-            bool x_read = false, y_read = false;
-            while (!x_read)
-            {
-                try
-                {
-                    Console.Write("X{0} (empty to finish reading polygon): ", suffix);
-                    string x_line = Console.ReadLine();
-                    // If empty or whitespace was given, return a null Point
-                    if (string.IsNullOrWhiteSpace(x_line))
-                        return null;
-                    x = readNumber(x_line);
-                    x_read = true;
-                }
-                catch (FormatException e)
-                {
-                    throw e;
-                }
-            }
-
-            while (!y_read)
-            {
-                try
-                {
-                    Console.Write("Y{0}: ", suffix);
-                    y = readNumber();
-                    y_read = true;
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("WARNING: Could not read Y coordinate, try again.");
-                }
-            };
-            // 2. Punkt Objekt mit den richtigen Koordinaten erzeugen 
-            return new Point(x, y);
-        }
-        public static Polygon readPolygon()
-        {
-            // Jetzt brauchen wir die tatsächliche Punkte
-            Polygon poly = new Polygon();
-            for (int i = 0; ; ++i)
-            {
-                Point po = readPoint((i + 1).ToString());
-                if (po == null)
-                    break;
-                //Point po = readPoint();
-                poly.points.Add(po);
-            }
-            return poly;
-        }
+        #endregion
+        #region "Calculations"
         public double calculatePerimeter()
         {
             return Polygon.calculatePerimeter(this.points.ToArray());
@@ -152,6 +91,32 @@ namespace A01_Euclidean_distance
             area /= 2.0;
 
             return area;
+        }
+        #endregion
+        #region "I/O"
+        public static Polygon readPolygon()
+        {
+            // Jetzt brauchen wir die tatsächliche Punkte
+            Polygon poly = new Polygon();
+            string suffix2 = "(empty to finish reading polygon)";
+            for (int i = 1; ; ++i)
+            {
+                string suffix1 = i.ToString();
+                Point po = Point.readPoint(
+                    string.Format("{0} {1}", suffix1, suffix2),
+                    suffix1);
+                if (po == null)
+                    break;
+                //Point po = readPoint();
+                poly.points.Add(po);
+            }
+            return poly;
+        }
+        #endregion
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<Point>)points).GetEnumerator();
         }
     }
 }

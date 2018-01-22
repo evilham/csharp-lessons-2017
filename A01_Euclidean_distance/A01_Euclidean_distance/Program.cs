@@ -38,6 +38,24 @@ namespace A01_Euclidean_distance
                 new Point(1.5, 0),
             }; // Area 7.5, Perimeter: 13.4403
 
+            //{
+            //    // Experiments with polymorphism / value/ref types
+            //    string s1 = "Hello ";
+            //    string s2 = s1;
+            //    s2 += "World";
+
+            //    Triangle tri1 = new Triangle(square_3x3);
+            //    Console.WriteLine(tri1.Name());
+            //    Triangle tri4 = tri1;
+            //    tri4.points[0] = new Point(1, 1);
+            //    Polygon poly1 = tri1;
+            //    Console.WriteLine(poly1.Name());
+
+            //    Triangle tri2 = (Triangle)poly1;
+            //    Polygon poly2 = new Polygon();
+            //    Triangle tri3 = (Triangle)poly2;
+            //}
+
             // 1. test
             testPolygon(new Polygon(square_3x3), 9.0, 12.0);
             testPolygon(new Polygon(triangle_b2_h1), 1.0, 4.8284);
@@ -51,7 +69,7 @@ namespace A01_Euclidean_distance
                 {
                     calcPolygon(Polygon.readPolygon());
                 }
-                catch (FormatException e)
+                catch (FormatException)
                 {
                     Console.WriteLine("There was an error reading your polygon.");
                 }
